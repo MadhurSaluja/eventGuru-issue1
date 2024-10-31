@@ -5,22 +5,21 @@ import { Separator } from "@/components/ui/separator";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import { SearchParamProps } from "@/types";
 import Collection from "@/components/shared/Collection";
-import { auth } from '@clerk/nextjs/server'
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const page = Number(searchParams?.page) || 1;
-  const searchText = (searchParams?.query as string) || '';
-  const category = (searchParams?.category as string) || '';
-  const { userId }: { userId: string | null } = auth();
+  const searchText = (searchParams?.query as string) || "";
+  const category = (searchParams?.category as string) || "";
 
   const events = await getAllEvents({
     query: searchText,
     category,
     page,
-    limit: 6
-  })
+    limit: 6,
+  });
 
   return (
     <>
@@ -42,9 +41,12 @@ export default async function Home({ searchParams }: SearchParamProps) {
                 className="w-full md:w-auto transition-all duration-200"
                 size="lg"
               >
-                <Link href={userId? '/events/create' : '/sign-in'}>
-                  Get Started
-                </Link>
+                <SignedIn>
+                  <Link href="/events/create">Get Started</Link>
+                </SignedIn>
+                <SignedOut>
+                  <Link href="/sign-in">Get Started</Link>
+                </SignedOut>
               </Button>
             </div>
           </div>
@@ -71,7 +73,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
         </div>
 
         <Collection
-          data={events?.data} // Ensure events.data contains unique identifiers
+          data={events?.data}
           emptyTitle="No Events Found"
           emptyStateSubtext="Come back later"
           collectionType="All_Events"
@@ -79,7 +81,6 @@ export default async function Home({ searchParams }: SearchParamProps) {
           page={page}
           totalPages={events?.totalPages}
         />
-
       </section>
       <Separator />
     </>
