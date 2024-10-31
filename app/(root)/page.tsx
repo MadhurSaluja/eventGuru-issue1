@@ -71,7 +71,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
         </div>
 
         <Collection
-          data={events?.data}
+          data={events?.data} // Ensure events.data contains unique identifiers
           emptyTitle="No Events Found"
           emptyStateSubtext="Come back later"
           collectionType="All_Events"
@@ -79,6 +79,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
           page={page}
           totalPages={events?.totalPages}
         />
+
       </section>
       <Separator />
     </>

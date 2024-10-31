@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { ClerkProvider, useAuth } from "@clerk/nextjs"; // Updated to use useAuth
-import Link from 'next/link';
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
+import { Outfit } from "next/font/google";
 import "./globals.css";
+
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "EventGuru",
   description:
-    "EventGuru is a platform for event management. It allows you to create, manage, and promote events...",
+    "EventGuru is a platform for event management. It allows you to create, manage, and promote events. It also allows you to sell tickets and manage attendees.",
   icons: {
     icon: "/logo.png",
   },
@@ -17,17 +19,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isSignedIn } = useAuth(); // Replaced useUser with useAuth
-
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body className={outfit.className}>
           <nav>
-            <Link href="/">Home</Link>
-            {isSignedIn && (
-              <Link href="/events/my-events">My Events</Link> // Only visible if logged in
-            )}
+            <a href="/">Home</a>
+            <SignedIn>
+              <a href="/events/my-events">My Events</a> {/* Visible if logged in */}
+            </SignedIn>
+            <SignedOut>
+              <a href="/login">Login</a> {/* Visible if logged out */}
+            </SignedOut>
           </nav>
           {children}
         </body>
