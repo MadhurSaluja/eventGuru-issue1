@@ -90,6 +90,7 @@ export type GetAllEventsParams = {
   category: string
   limit: number
   page: number
+  userId: string
 }
 
 export type GetEventsByUserParams = {
